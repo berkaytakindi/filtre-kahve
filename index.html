@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#090909" />
+<title>Filtre Kahve Hesaplayıcı</title>
+<style>
+:root{color-scheme:dark;--bg:#090909;--panel:#121212;--border:#343434;--text:#f8f8f8;--muted:#aaa;--accent:#d6ad78}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100svh;display:flex;justify-content:center;align-items:flex-start;padding:clamp(18px,5vw,48px)}main{width:min(100%,580px);margin-top:min(9vh,70px)}.eyebrow{font-size:13px;color:var(--accent);font-weight:650;letter-spacing:.12em;text-transform:uppercase;margin:0 0 12px}h1{font-size:clamp(26px,6vw,34px);letter-spacing:-.04em;margin:0 0 8px}p{color:var(--muted);margin:0 0 30px;line-height:1.5;font-size:14px}.card{border:1px solid var(--border);background:var(--panel);border-radius:22px;padding:clamp(18px,5vw,28px);box-shadow:0 16px 55px #0004}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{display:block;font-size:13px;font-weight:650;margin-bottom:9px}input,select{width:100%;min-height:52px;background:#0a0a0a;border:1px solid #444;border-radius:13px;color:white;font-size:16px;padding:0 15px;outline:none}input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #d6ad7826}select{cursor:pointer}.result{text-align:center;border-top:1px solid #2c2c2c;margin-top:27px;padding-top:28px}.result small{color:#bbb;font-size:13px}.amount{font-size:clamp(38px,10vw,54px);font-weight:750;letter-spacing:-.045em;margin-top:5px;line-height:1.2}.amount span{font-size:22px;font-weight:500;letter-spacing:0}.hint{font-size:13px;color:var(--muted);margin-top:12px}.presets{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.presets button{border:1px solid #383838;background:#191919;color:#eee;border-radius:999px;padding:9px 15px;font-size:13px;cursor:pointer}.presets button.active{background:#392b1d;border-color:var(--accent);color:#ffe0b5}.footer{margin-top:22px;text-align:center;color:#777;font-size:12px}@media(max-width:430px){.fields{grid-template-columns:1fr}.card{border-radius:18px}.presets button{flex:1}}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">☕ Günlük demleme yardımcın</div>
+<h1>Filtre Kahve Hesaplayıcı</h1>
+<p>Su miktarını ve kahve oranını seç, kullanman gereken kahveyi hemen hesapla.</p>
+<section class="card" aria-label="Kahve hesaplama">
+<div class="fields">
+<div><label for="water">Su miktarı (ml)</label><input id="water" type="number" inputmode="decimal" min="0" step="10" value="500" /></div>
+<div><label for="ratio">Su / kahve oranı</label><select id="ratio"><option value="15">1:15 – Sert</option><option value="16">1:16 – Dengeli</option><option value="17" selected>1:17 – Hafif</option><option value="18">1:18 – Daha hafif</option><option value="19">1:19 – Çok hafif</option><option value="20">1:20 – Ekstra hafif</option></select></div>
+</div>
+<div class="result" aria-live="polite"><small>Kullanman gereken kahve</small><div class="amount"><output id="coffee">29,4</output> <span>gram</span></div><div class="hint" id="hint">500 ml su / 1:17 oran</div></div>
+<div class="presets" aria-label="Hızlı su miktarı seçimi"><button type="button" data-ml="250">250 ml</button><button type="button" data-ml="300">300 ml</button><button type="button" data-ml="500" class="active">500 ml</button><button type="button" data-ml="1000">1 litre</button></div>
+</section>
+<div class="footer">Kağıt filtreli kahve makineleri için pratik hesaplama</div>
+</main>
+<script>
+const water=document.getElementById('water'),ratio=document.getElementById('ratio'),coffee=document.getElementById('coffee'),hint=document.getElementById('hint'),buttons=document.querySelectorAll('[data-ml]');
+function update(){const ml=Number(water.value),r=Number(ratio.value);coffee.textContent=Number.isFinite(ml)&&ml>0?(ml/r).toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1}):'0,0';hint.textContent=`${Math.max(0,ml||0).toLocaleString('tr-TR')} ml su / 1:${r} oran`;buttons.forEach(b=>b.classList.toggle('active',Number(b.dataset.ml)===ml));}
+water.addEventListener('input',update);ratio.addEventListener('change',update);buttons.forEach(b=>b.addEventListener('click',()=>{water.value=b.dataset.ml;update()}));update();
+</script>
+</body>
+</html>
